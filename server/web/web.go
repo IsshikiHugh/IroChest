@@ -16,7 +16,9 @@ func Init() {
 
 	api := r.Group("/api")
 	{
-		api.POST("/note", CreateNewNote)
+		api.POST("/note/new", CreateNewNote)
+		api.POST("/note/list", ListNoteByCategory) // The special situation of `ListNoteByCategory`
+		api.POST("/note/list/category", ListNoteByCategory)
 	}
 }
 

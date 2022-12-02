@@ -11,7 +11,7 @@ import (
 func CreateNewNote(c *gin.Context) {
 	req := CreateNewNoteReq{}
 	// Check valid.
-	if err := c.Bind(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		logrus.Error(ErrBindBodyFail.Error() + " : " + err.Error())
 		c.JSON(http.StatusOK, ErrResp{
 			ErrMsg: ErrBindBodyFail.Error(),
@@ -37,4 +37,64 @@ func CreateNewNote(c *gin.Context) {
 		Data:   note,
 	})
 	return
+}
+
+func ListNote(c *gin.Context) {
+	req := ListNoteByCategoryReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		logrus.Error(ErrBindBodyFail.Error() + " : " + err.Error())
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrBindBodyFail.Error(),
+		})
+		return
+	}
+	// Auth
+	if !db.QueryHasAccessKey(req.AccessKey) {
+		logrus.Error(ErrAuthFail.Error())
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrAuthFail.Error(),
+		})
+		return
+	}
+	// Query
+	notes, err := db.QueryNotesByCategoryAndLimit("", req.Limit)
+	if err != nil {
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrInternal.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, SuccessResp{
+		ErrMsg: "",
+		Data:   notes,
+	})
+}
+
+func ListNoteByCategory(c *gin.Context) {
+	req := ListNoteByCategoryReq{}
+	if err := c.ShouldBind(&req); err != nil {
+		logrus.Error(ErrBindBodyFail.Error() + " : " + err.Error())
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrBindBodyFail.Error(),
+		})
+		return
+	}
+	// Auth
+	if !db.QueryHasAccessKey(req.AccessKey) {
+		logrus.Error(ErrAuthFail.Error())
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrAuthFail.Error(),
+		})
+		return
+	}
+	// Query
+	notes, err := db.QueryNotesByCategoryAndLimit(req.Category, req.Limit)
+	if err != nil {
+		c.JSON(http.StatusOK, ErrResp{
+			ErrMsg: ErrInternal.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, SuccessResp{
+		ErrMsg: "",
+		Data:   notes,
+	})
 }

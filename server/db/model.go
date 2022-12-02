@@ -13,6 +13,7 @@ var ErrInvalidDBName = errors.New("INVALID_DB_NAME")
 var ErrConnectDBFail = errors.New("ERR_CONNECT_DB_FAIL")
 var ErrMigrateDBFail = errors.New("ERR_MIGRATE_DB_FAIL")
 var ErrInsertRecordFail = errors.New("ERR_INSERT_RECORD_FAIL")
+var ErrQueryRecordFail = errors.New("ERR_QUERY_RECORD_FAIL")
 var ErrInvalidAccessKey = errors.New("ERR_INVALID_ACCESS_KEY")
 
 // Define the data structure in records table.
@@ -43,4 +44,5 @@ var TypeAdminCategory = 2
 type Note struct {
 	Category string `json:"category"`
 	Data     string `json:"data"`
+	Created  int64  `json:"creat_time"`
 }
